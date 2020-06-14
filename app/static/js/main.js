@@ -19,6 +19,12 @@ $btnEnter.click((e)=>{
         layer.msg('房间号必须是6-16位的数字');
         return;
     }
-    layer.msg(reg.test(v));
+    // 进入房间
+    let url = TOOLS.getUrl("/interview",
+        {
+            roomid: v,
+            }
+        );
+    location.href = url;
 });
 ;
