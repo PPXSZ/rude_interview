@@ -15,4 +15,5 @@ class UrlHelper:
         """
         创建静态资源请求地址，添加版本信息
         """
-        return f"/static/{path}?v={time.time()}"
+        v = time.time()
+        return f"/static/{path}?v={v}"

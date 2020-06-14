@@ -17,3 +17,6 @@ app.register_blueprint(index_page, url_prefix="/")
 app.register_blueprint(interview_page, url_prefix="/interview")
 # 全局函数
 app.add_template_global(UrlHelper.get_static_url, "getStaticUrl")
+
+# 信令服务注册
+import controller.signal
