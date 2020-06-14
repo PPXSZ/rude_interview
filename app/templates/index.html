@@ -1,0 +1,47 @@
+{% extends "common/layout.html" %}
+
+{% block css %}
+    <style>
+        #room-selector {
+            margin: 3em auto 0 auto;
+            padding: 1em 1.5em 1.3em 1.5em;
+            width: 25em;
+        }
+
+        h1 {
+            font-weight: 400;
+            margin: 0 0 0.8em 0;
+            padding: 0 0 0.2em 0;
+        }
+        #roomid{
+            background: transparent;
+            color: aqua;
+            text-align: center;
+            border-bottom: 2px solid #ccc;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+    .btn-mao{
+        outline:0px !important;
+        background: transparent !important;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="room-selector">
+        <h1>素质面试</h1>
+        <p>输入您的面试房间号:</p>
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-control" id="roomid" placeholder="请输入!">
+            </div>
+            <button id="enter" type="button" class="btn-mao btn btn-danger">进入房间</button>
+            <button id="random" type="button" class="btn-mao pull-right btn btn-success">随机房间</button>
+        </form>
+    </div>
+{% endblock %}
+{% block js %}
+<script src="{{ getStaticUrl('js/main.js') }}"></script>
+{% endblock %}
