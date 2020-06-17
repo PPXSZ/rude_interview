@@ -9,6 +9,7 @@ let $reload = $("#reload");
 let $chat = $("#chat");
 let $send = $("#send");
 let $msg = $("#msg");
+let $clearChat = $("#clearChat");
 
 // 本机采集的视频信息
 let localStream;
@@ -203,7 +204,7 @@ function connectSignal() {
     });
     socket.on('full', (e)=>{
         // 房间满人
-        layer.msg('当前房间已满! : ' + e);
+        layer.msg('当前房间已满!');
     });
 }
 
@@ -282,6 +283,13 @@ $send.click(e=>{
         // 请求输入框
         $msg.val("");
     }
+});
+
+/**
+ * 清除聊天记录
+ */
+$clearChat.click(e=>{
+    $chat.text("");
 });
 
 start();
