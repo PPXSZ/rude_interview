@@ -6,6 +6,9 @@ let local = document.querySelector("video#local");
 let remote = document.querySelector("video#remote");
 let $stop = $("#stop");
 let $reload = $("#reload");
+let $chat = $("#chat");
+let $send = $("#send");
+let $msg = $("#msg");
 
 // 本机采集的视频信息
 let localStream;
@@ -17,12 +20,31 @@ let roomid = $("#roomid").val();
 let stat = 'init';
 // peer connection
 let pc;
+// data channel
+let dc;
 
 /**
  * 打印错误信息
  */
 function handleError(e) {
     console.error('error:', e);
+}
+
+/**
+ * dataChannel 收到数据
+ */
+function onDataChannelMsg(msg) {
+    // 收到消息
+    // console.log(msg);
+    if (msg.data)
+        $chat.text($chat.text() + "对方 :" + msg.data + '\r\n');
+}
+
+/**
+ * dataChannel 状态改变
+ */
+function onDataChannelStateChanged() {
+
 }
 
 /**
@@ -85,6 +107,15 @@ function createPeerConnection() {
             // 接收到远端的媒体数据
             remote.srcObject = e.streams[0];
         }
+
+        // 获取data channel
+        pc.ondatachannel = e =>{
+            if (dc) return;
+            dc = e.channel;
+            dc.onmessage = onDataChannelMsg;
+            dc.onopen = dc.onclose = onDataChannelStateChanged;
+        }
+
     }
     if (localStream){
         pc.addStream(localStream);
@@ -151,11 +182,19 @@ function connectSignal() {
     socket.on('other_joined', (e)=>{
         stat = "ready";
         console.log("other joined stat:", stat);
+        if (!pc)
+            createPeerConnection();
+        // 创建聊天通道
+        dc = pc.createDataChannel('chat');
+        dc.onmessage = onDataChannelMsg;
+        dc.onopen = dc.onclose = onDataChannelMsg;
         // 尝试进行媒体协商
         mediaNegotiate();
     });
     socket.on('other_leave', (e)=>{
         stat = "unbind";
+        pc.close();
+        pc = null;
         console.log("other leave room stat: ", stat);
     });
     socket.on('error', (e)=>{
@@ -227,6 +266,23 @@ function stop() {
 function handleError(e) {
     console.error('error:', e);
 }
+
+// 发送消息
+$send.click(e=>{
+    let msg = $msg.val();
+    if (!msg){
+        layer.msg("发送信息不能为空!");
+        return;
+    }
+    if (dc){
+        // 发送给对端
+        dc.send(msg);
+        // 自己也显示
+        $chat.text($chat.text() + '我 :' + msg + '\r\n');
+        // 请求输入框
+        $msg.val("");
+    }
+});
 
 start();
 ;
